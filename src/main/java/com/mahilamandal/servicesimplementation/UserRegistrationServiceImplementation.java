@@ -5,6 +5,7 @@ import com.mahilamandal.repository.RoleRepository;
 import com.mahilamandal.repository.UserRegistrationRepository;
 import com.mahilamandal.request.UserRegistrationRequest;
 import com.mahilamandal.response.UserRegistrationResponse;
+import com.mahilamandal.services.RoleService;
 import com.mahilamandal.services.UserRegistrationService;
 import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
     @Autowired
     private UserRegistrationRepository userRegistrationRepository;
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @Override
     public UserRegistrationResponse addUser(UserRegistrationRequest userRegistration) {
@@ -32,7 +33,7 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
         entity.setAddress(userRegistration.getAddress());
         entity.setDateTime(LocalDateTime.now());
 
-        entity.setRole(roleRepository.findById(userRegistration.getRoleId()).get());
+        entity.setRole(roleService.getRoleById(userRegistration.getRoleId()));
 
         userRegistrationRepository.save(entity);
         UserRegistrationResponse userRegistrationResponse=new UserRegistrationResponse();
