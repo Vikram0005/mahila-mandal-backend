@@ -11,6 +11,7 @@ import com.mahilamandal.utils.BaseResponse;
 import com.mahilamandal.utils.Logger;
 import com.mahilamandal.utils.enums.PrintType;
 import com.mahilamandal.utils.enums.RequestType;
+import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MainController {
 
-    ObjectMapper mapper=null;
+    ObjectMapper mapper;
     public MainController() {
         mapper = new ObjectMapper();
     }
-    @Autowired(required = true)
-    private UserRegistrationService userRegistrationService;
 
     @PostMapping("/processRequest/")
     private String PostData(@RequestBody String data) throws JsonProcessingException {
@@ -47,15 +46,11 @@ public class MainController {
         } else {
             response.setMessage("Request object is null");
         }
-        //response.setStatusCode();
-
         return ObjectToString(response);
     }
 
     private String callServices(BaseRequest baseRequest,String requestData) throws JsonProcessingException {
-       Object response=new BaseResponse();
-
-       response=callServiceBasedOnRequestType(baseRequest.getRequestType(),requestData);
+        Object response=callServiceBasedOnRequestType(baseRequest.getRequestType(),requestData);
 
         BaseResponse res=(BaseResponse)response;
         res.setUserId(baseRequest.getUserId());
@@ -65,9 +60,22 @@ public class MainController {
         Logger.printMessage(finalResponse,PrintType.Response,baseRequest.getRequestType());
         return finalResponse;
     }
+
+    private  String ObjectToString(Object object) throws JsonProcessingException {
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(object);
+        return json;
+    }
+
+    @Autowired()
+    private UserRegistrationService userRegistrationService;
+
     private Object callServiceBasedOnRequestType(RequestType requestType,String requestData) throws JsonProcessingException {
-        Object response=null;
+        Object response=new BaseResponse();
         switch(requestType){
+            case Test:
+                response=new BaseResponse("Test API is working ", StatusCode.Success.ordinal());
+                break;
             case UserLogin:
 
                 break;
@@ -78,10 +86,6 @@ public class MainController {
         }
         return response;
     }
-    private  String ObjectToString(Object object) throws JsonProcessingException {
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(object);
-        return json;
-    }
+
 
 }

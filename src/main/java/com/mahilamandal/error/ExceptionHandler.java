@@ -18,7 +18,7 @@ public class ExceptionHandler {
 
         Logger.printError(exception.getStackTrace().toString());
 
-        response.setMessage("Internal Server Error");
+        response.setMessage(exception.getMessage());
         response.setStatusCode(StatusCode.InternalServerError.ordinal());
         return response;
     }

@@ -1,7 +1,11 @@
 package com.mahilamandal.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_user_registration",
@@ -10,6 +14,9 @@ import java.sql.Date;
 //    @UniqueConstraint(name = "unique_userName",columnNames ="userName")
     }
 )
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRegistrationEntity {
     @Id
     @SequenceGenerator(
@@ -27,7 +34,7 @@ public class UserRegistrationEntity {
     private String password;
     @Column(nullable = false)
     private String mobileNo;
-    private Date dateTime;
+    private LocalDateTime dateTime;
     @Embedded
     private Address address;
 
