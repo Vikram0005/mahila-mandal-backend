@@ -1,7 +1,7 @@
 package com.mahilamandal.error;
 
 
-import com.mahilamandal.utils.BaseResponse;
+import com.mahilamandal.response.BaseResponse;
 import com.mahilamandal.utils.Logger;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;

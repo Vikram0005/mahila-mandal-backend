@@ -3,6 +3,8 @@ package com.mahilamandal.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,7 +36,11 @@ public class UserRegistrationEntity {
     private String password;
     @Column(nullable = false)
     private String mobileNo;
-    private LocalDateTime dateTime;
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
     @Embedded
     private Address address;
 

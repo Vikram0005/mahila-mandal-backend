@@ -5,7 +5,7 @@ import com.mahilamandal.utils.enums.RequestType;
 
 public class Logger {
 
-    public static int loggerStatus=0;
+    private static int loggerStatus=0;
 
     public static  void EnableLogger(){
         loggerStatus=1;

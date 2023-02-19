@@ -1,18 +1,19 @@
 package com.mahilamandal.servicesimplementation;
 
 import com.mahilamandal.entity.UserRegistrationEntity;
-import com.mahilamandal.repository.RoleRepository;
 import com.mahilamandal.repository.UserRegistrationRepository;
+import com.mahilamandal.request.UserLoginRequest;
 import com.mahilamandal.request.UserRegistrationRequest;
-import com.mahilamandal.response.UserRegistrationResponse;
+import com.mahilamandal.response.Response;
+import com.mahilamandal.response.UserInfo;
 import com.mahilamandal.services.RoleService;
 import com.mahilamandal.services.UserRegistrationService;
-import org.aspectj.weaver.NewConstructorTypeMunger;
+import com.mahilamandal.response.BaseResponse;
+import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class UserRegistrationServiceImplementation implements UserRegistrationService {
@@ -23,7 +24,9 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
     private RoleService roleService;
 
     @Override
-    public UserRegistrationResponse addUser(UserRegistrationRequest userRegistration) {
+    public BaseResponse addUser(UserRegistrationRequest userRegistration) {
+
+        BaseResponse baseResponse=new BaseResponse();
 
         UserRegistrationEntity entity=new UserRegistrationEntity();
         entity.setUserName(userRegistration.getUserName());
@@ -31,13 +34,70 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
         entity.setPassword(userRegistration.getPassword());
         entity.setMobileNo(userRegistration.getMobileNo());
         entity.setAddress(userRegistration.getAddress());
-        entity.setDateTime(LocalDateTime.now());
 
-        entity.setRole(roleService.getRoleById(userRegistration.getRoleId()));
+        entity.setRole(
+                roleService.getRoleById(userRegistration.getRoleId())
+                .getResponse()
+        );
 
         userRegistrationRepository.save(entity);
-        UserRegistrationResponse userRegistrationResponse=new UserRegistrationResponse();
-        userRegistrationResponse.setMessage("Data Inserted Successfully");
-        return userRegistrationResponse;
+
+        baseResponse.setMessage("Data Inserted Successfully");
+        baseResponse.setStatusCode(StatusCode.Success.ordinal());
+        return baseResponse;
+    }
+
+    @Override
+    public Response<UserInfo> loginUser(UserLoginRequest userLoginRequest) {
+        Response<UserInfo> response=new Response<>();
+
+        UserRegistrationEntity entity= userRegistrationRepository.findByMobileNoAndPassword(
+                userLoginRequest.getMobileNo(),
+                userLoginRequest.getPassword()
+        );
+
+        if (entity!=null){
+            response.setResponse(new UserInfo(
+                    entity.getId(),
+                    entity.getAddedBy(),
+                    entity.getUserName(),
+                    entity.getPassword(),
+                    entity.getMobileNo(),
+                    entity.getRole(),
+                    entity.getAddress()
+            ));
+            response.setMessage("Login Successfully");
+            response.setStatusCode(StatusCode.Success.ordinal());
+        }else {
+            response.setMessage("Invalid Mobile No Or Password !");
+            response.setStatusCode(StatusCode.Failed.ordinal());
+        }
+        return response;
+    }
+
+    @Override
+    public Response<UserInfo> findUserById(int userId) {
+        Response<UserInfo> response=new Response<>();
+
+        Optional<UserRegistrationEntity> user= userRegistrationRepository.findById(userId);
+
+        if (user.isPresent()){
+            UserRegistrationEntity entity=user.get();
+            response.setResponse(new UserInfo(
+                    entity.getId(),
+                    entity.getAddedBy(),
+                    entity.getUserName(),
+                    entity.getPassword(),
+                    entity.getMobileNo(),
+                    entity.getRole(),
+                    entity.getAddress()
+            ));
+            response.setMessage("Fetched Successfully");
+            response.setStatusCode(StatusCode.Success.ordinal());
+        }else {
+            response.setMessage("Invalid User Id !");
+            response.setStatusCode(StatusCode.Failed.ordinal());
+        }
+        return response;
     }
 }

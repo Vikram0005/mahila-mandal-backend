@@ -3,9 +3,11 @@ package com.mahilamandal.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -14,15 +16,20 @@ import java.sql.Date;
 @Table(name = "tbl_role")
 public class RoleEntity {
     @Id
-    @SequenceGenerator(
-            name = "role_sequence",
-            sequenceName = "role_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator ="role_sequence"
-    )
+//    @SequenceGenerator(
+//            name = "role_sequence",
+//            sequenceName = "role_sequence",
+//            allocationSize = 1
+//    )
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+//            generator ="role_sequence"
+//    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String roleName;
-    private Date dateTime;
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
 }

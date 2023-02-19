@@ -1,6 +1,6 @@
-package com.mahilamandal.utils;
+package com.mahilamandal.response;
 
-import com.mahilamandal.utils.enums.RequestType;
+import com.mahilamandal.request.BaseRequest;
 import com.mahilamandal.utils.enums.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BaseResponse extends BaseRequest{
+public class BaseResponse extends BaseRequest {
     protected String message;
     protected int statusCode= StatusCode.Success.ordinal();
 }

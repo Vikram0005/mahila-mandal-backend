@@ -1,4 +1,4 @@
-package com.mahilamandal.utils;
+package com.mahilamandal.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mahilamandal.utils.enums.RequestType;
@@ -16,5 +16,5 @@ import java.io.Serializable;
 @ToString
 public class BaseRequest {
     protected int userId;
-    protected RequestType requestType=RequestType.None;
+    protected int requestType=RequestType.None.ordinal();
 }
