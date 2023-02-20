@@ -13,5 +13,5 @@ public interface RoleService {
     BaseResponse addRole(RoleRequest roleRequest);
 
     Response<RoleResponse> getAllRole();
-    Response<RoleEntity> getRoleById(int roleId);
+    RoleEntity getRoleById(int roleId);
 }

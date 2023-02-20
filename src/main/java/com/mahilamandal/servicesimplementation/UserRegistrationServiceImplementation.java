@@ -1,5 +1,6 @@
 package com.mahilamandal.servicesimplementation;
 
+import com.mahilamandal.entity.RoleEntity;
 import com.mahilamandal.entity.UserRegistrationEntity;
 import com.mahilamandal.repository.UserRegistrationRepository;
 import com.mahilamandal.request.UserLoginRequest;
@@ -35,15 +36,17 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
         entity.setMobileNo(userRegistration.getMobileNo());
         entity.setAddress(userRegistration.getAddress());
 
-        entity.setRole(
-                roleService.getRoleById(userRegistration.getRoleId())
-                .getResponse()
-        );
-
-        userRegistrationRepository.save(entity);
-
-        baseResponse.setMessage("Data Inserted Successfully");
-        baseResponse.setStatusCode(StatusCode.Success.ordinal());
+        RoleEntity roleEntity=roleService.getRoleById(userRegistration.getRoleId());
+        if (roleEntity!=null){
+            entity.setRole(roleEntity);
+            userRegistrationRepository.save(entity);
+            baseResponse.setMessage("Data Inserted Successfully");
+            baseResponse.setStatusCode(StatusCode.Success.ordinal());
+        }
+        else {
+            baseResponse.setMessage("Unable to find the role based on roleId");
+            baseResponse.setStatusCode(StatusCode.Failed.ordinal());
+        }
         return baseResponse;
     }
 

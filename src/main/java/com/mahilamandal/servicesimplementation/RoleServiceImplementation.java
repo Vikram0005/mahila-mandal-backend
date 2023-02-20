@@ -11,6 +11,8 @@ import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class RoleServiceImplementation implements RoleService {
 
@@ -40,12 +42,11 @@ public class RoleServiceImplementation implements RoleService {
 
 
     @Override
-    public Response<RoleEntity> getRoleById(int roleId) {
-
-        Response<RoleEntity> response = new Response<>();
-        RoleEntity roleEntity = roleRepository.findById(roleId).get();
-
-        response.setResponse(roleEntity);
-        return response;
+    public RoleEntity getRoleById(int roleId) {
+        Optional<RoleEntity> roleEntity= roleRepository.findById(roleId);
+        if (roleEntity.isPresent())
+            return roleEntity.get();
+        else
+            return null;
     }
 }
