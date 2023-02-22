@@ -48,7 +48,7 @@ public class MainController {
         } else {
             response.setMessage("Requested object is null");
         }
-        return ConvertObjectToString(response);
+        return ConvertObjectToJson(response);
     }
 
     private String callServices(BaseRequest baseRequest,String requestData) throws JsonProcessingException {
@@ -58,12 +58,12 @@ public class MainController {
         res.setUserId(baseRequest.getUserId());
         res.setRequestType(baseRequest.getRequestType());
 
-        String finalResponse= ConvertObjectToString(response);
+        String finalResponse= ConvertObjectToJson(response);
         Logger.printMessage(finalResponse,PrintType.Response,RequestType.values()[baseRequest.getRequestType()]);
         return finalResponse;
     }
 
-    private  String ConvertObjectToString(Object object) throws JsonProcessingException {
+    private  String ConvertObjectToJson(Object object){
         return gson.toJson(object);
     }
 
@@ -72,7 +72,7 @@ public class MainController {
     @Autowired
     private RoleService roleService;
 
-    private Object callServicesBasedOnRequestType(int requestType, String requestData) throws JsonProcessingException {
+    private Object callServicesBasedOnRequestType(int requestType, String requestData) {
         Object response=new BaseResponse();
         switch(RequestType.values()[requestType]){
             case Test:
@@ -102,6 +102,7 @@ public class MainController {
     }
 
     private <R> Request JsonToObject(String data, Class<R> requestOfR){
+
         return gson.fromJson(data,(Type)requestOfR);
     }
 }

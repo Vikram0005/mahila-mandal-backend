@@ -44,7 +44,7 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
             baseResponse.setStatusCode(StatusCode.Success.ordinal());
         }
         else {
-            baseResponse.setMessage("Unable to find the role based on roleId");
+            baseResponse.setMessage("Unable to find the role");
             baseResponse.setStatusCode(StatusCode.Failed.ordinal());
         }
         return baseResponse;
