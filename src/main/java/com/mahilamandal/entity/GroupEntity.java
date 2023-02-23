@@ -2,6 +2,7 @@ package com.mahilamandal.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,25 +15,29 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tbl_role")
-public class RoleEntity {
+@Builder
+@Table(name = "tbl_group")
+public class GroupEntity {
     @Id
-//    @SequenceGenerator(
-//            name = "role_sequence",
-//            sequenceName = "role_sequence",
-//            allocationSize = 1
-//    )
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-//            generator ="role_sequence"
-//    )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String roleName;
+
+    @Column(nullable = false)
+    private String groupName;
+
+    @Column(nullable = false)
+    private float amount;
+
+    @Column(nullable = false)
+    private int tenure;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "addedBy",referencedColumnName = "id")
+    private UserRegistrationEntity user;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     private LocalDateTime createdDateTime;
-
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @UpdateTimestamp

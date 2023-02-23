@@ -1,5 +1,6 @@
 package com.mahilamandal.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,9 +37,12 @@ public class UserRegistrationEntity {
     private String password;
     @Column(nullable = false)
     private String mobileNo;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     private LocalDateTime createdDateTime;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
     @Embedded

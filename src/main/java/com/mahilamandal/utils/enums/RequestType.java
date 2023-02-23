@@ -7,6 +7,9 @@ public enum RequestType {
     FindUserById,//4
     AddRole,//5
     FetchRole,//6
+    AddGroup,//7
+    GetAllGroup,//8
+    GetGroupById,//9
 }
 
 

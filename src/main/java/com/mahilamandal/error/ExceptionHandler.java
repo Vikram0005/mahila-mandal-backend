@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 public class ExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
-
-    private BaseResponse GlobalException(Exception exception){
-        BaseResponse response= new BaseResponse();
-
-        Logger.printError(exception.getStackTrace().toString());
-
-        response.setMessage(exception.getMessage());
-        response.setStatusCode(StatusCode.InternalServerError.ordinal());
-        return response;
-    }
+//    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+//
+//    private BaseResponse GlobalException(Exception exception){
+//        BaseResponse response= new BaseResponse();
+//
+//        Logger.printError(exception.getStackTrace().toString());
+//
+//        response.setMessage(exception.getMessage());
+//        response.setStatusCode(StatusCode.InternalServerError.ordinal());
+//        return response;
+//    }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(JsonProcessingException.class)
     private BaseResponse HandleJsonException(JsonProcessingException exception){

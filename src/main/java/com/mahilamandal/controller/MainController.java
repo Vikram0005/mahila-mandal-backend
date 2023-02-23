@@ -1,12 +1,10 @@
 package com.mahilamandal.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mahilamandal.request.*;
-import com.mahilamandal.request.dataclasses.RoleRequestData;
-import com.mahilamandal.request.dataclasses.UserLoginRequestData;
-import com.mahilamandal.request.dataclasses.UserRegistrationRequestData;
+import com.mahilamandal.request.dataclasses.*;
+import com.mahilamandal.services.GroupService;
 import com.mahilamandal.services.RoleService;
 import com.mahilamandal.services.UserRegistrationService;
 import com.mahilamandal.request.BaseRequest;
@@ -20,20 +18,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.reflect.Type;
-
 @RestController
 public class MainController {
-    private Gson gson;
+    //private final Gson gson;
+    private ObjectMapper mapper;
     public MainController() {
-        gson=new GsonBuilder().setPrettyPrinting().create();
+
+//        gson=new GsonBuilder()
+//                .setPrettyPrinting()
+//                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+//                .create();
+        mapper=new ObjectMapper();
     }
 
     @PostMapping("/processRequest/")
     private String PostData(@RequestBody String data) throws JsonProcessingException {
         BaseResponse response = new BaseResponse();
 
-        BaseRequest request=gson.fromJson(data,BaseRequest.class);
+        BaseRequest request=mapper.readValue(data,BaseRequest.class);
         if (request != null) {
             Logger.printMessage(data,PrintType.Request,RequestType.values()[request.getRequestType()]);
 
@@ -63,16 +65,18 @@ public class MainController {
         return finalResponse;
     }
 
-    private  String ConvertObjectToJson(Object object){
-        return gson.toJson(object);
+    private  String ConvertObjectToJson(Object object) throws JsonProcessingException {
+        return  mapper.writeValueAsString(object);
     }
 
-    @Autowired()
+    @Autowired
     private UserRegistrationService userRegistrationService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private GroupService groupService;
 
-    private Object callServicesBasedOnRequestType(int requestType, String requestData) {
+    private Object callServicesBasedOnRequestType(int requestType, String requestData) throws JsonProcessingException {
         Object response=new BaseResponse();
         switch(RequestType.values()[requestType]){
             case Test:
@@ -97,12 +101,24 @@ public class MainController {
                 Request request=JsonToObject(requestData,Request.class);
                 response=userRegistrationService.findUserById(request.getUserId());
                 break;
+            case AddGroup:
+                Request<GroupRequest> groupRequest=JsonToObject(requestData, GroupRequestData.class);
+                response=groupService.addGroup(groupRequest.getRequest());
+                break;
+            case GetAllGroup:
+                response=groupService.getAllGroup();
+                break;
+            case  GetGroupById:
+                Request request1=JsonToObject(requestData,Request.class);
+                response=groupService.getGroupById(request1.getUserId());
+                break;
         }
         return response;
     }
 
-    private <R> Request JsonToObject(String data, Class<R> requestOfR){
+    private <R> Request JsonToObject(String data, Class<R> requestOfR) throws JsonProcessingException {
 
-        return gson.fromJson(data,(Type)requestOfR);
+        return (Request) mapper.readValue(data,requestOfR);
+        //return gson.fromJson(data,(Type)requestOfR);
     }
 }

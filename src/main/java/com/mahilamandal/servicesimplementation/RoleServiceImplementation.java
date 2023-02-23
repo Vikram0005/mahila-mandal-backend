@@ -9,11 +9,11 @@ import com.mahilamandal.services.RoleService;
 import com.mahilamandal.response.BaseResponse;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Component
+@Service
 public class RoleServiceImplementation implements RoleService {
 
     @Autowired
