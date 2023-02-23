@@ -1,7 +1,7 @@
 package com.mahilamandal.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mahilamandal.request.*;
 import com.mahilamandal.request.dataclasses.*;
 import com.mahilamandal.services.GroupService;
@@ -18,24 +18,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Type;
+
 @RestController
 public class MainController {
-    //private final Gson gson;
-    private ObjectMapper mapper;
+    private final Gson gson;
     public MainController() {
 
-//        gson=new GsonBuilder()
-//                .setPrettyPrinting()
-//                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-//                .create();
-        mapper=new ObjectMapper();
+        gson=new GsonBuilder()
+                .setPrettyPrinting()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .create();
     }
 
     @PostMapping("/processRequest/")
-    private String PostData(@RequestBody String data) throws JsonProcessingException {
+    private String PostData(@RequestBody String data){
         BaseResponse response = new BaseResponse();
 
-        BaseRequest request=mapper.readValue(data,BaseRequest.class);
+        BaseRequest request=JsonToObject(data,BaseRequest.class);
         if (request != null) {
             Logger.printMessage(data,PrintType.Request,RequestType.values()[request.getRequestType()]);
 
@@ -53,7 +53,7 @@ public class MainController {
         return ConvertObjectToJson(response);
     }
 
-    private String callServices(BaseRequest baseRequest,String requestData) throws JsonProcessingException {
+    private String callServices(BaseRequest baseRequest,String requestData) {
         Object response= callServicesBasedOnRequestType(baseRequest.getRequestType(),requestData);
 
         BaseResponse res=(BaseResponse)response;
@@ -65,8 +65,8 @@ public class MainController {
         return finalResponse;
     }
 
-    private  String ConvertObjectToJson(Object object) throws JsonProcessingException {
-        return  mapper.writeValueAsString(object);
+    private  String ConvertObjectToJson(Object object) {
+        return  gson.toJson(object);
     }
 
     @Autowired
@@ -76,7 +76,7 @@ public class MainController {
     @Autowired
     private GroupService groupService;
 
-    private Object callServicesBasedOnRequestType(int requestType, String requestData) throws JsonProcessingException {
+    private Object callServicesBasedOnRequestType(int requestType, String requestData){
         Object response=new BaseResponse();
         switch(RequestType.values()[requestType]){
             case Test:
@@ -116,9 +116,7 @@ public class MainController {
         return response;
     }
 
-    private <R> Request JsonToObject(String data, Class<R> requestOfR) throws JsonProcessingException {
-
-        return (Request) mapper.readValue(data,requestOfR);
-        //return gson.fromJson(data,(Type)requestOfR);
+    private <R> Request JsonToObject(String data, Class<R> requestOfR) {
+        return gson.fromJson(data,(Type)requestOfR);
     }
 }
