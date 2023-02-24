@@ -5,11 +5,12 @@ import com.mahilamandal.request.RoleRequest;
 import com.mahilamandal.response.Response;
 import com.mahilamandal.response.RoleResponse;
 import com.mahilamandal.response.BaseResponse;
+import com.mahilamandal.response.info.RoleInfo;
 
 public interface RoleService {
 
     BaseResponse addRole(RoleRequest roleRequest);
 
     Response<RoleResponse> getAllRole();
-    RoleEntity getRoleById(int roleId);
+    Response<RoleInfo> getRoleById(int roleId);
 }

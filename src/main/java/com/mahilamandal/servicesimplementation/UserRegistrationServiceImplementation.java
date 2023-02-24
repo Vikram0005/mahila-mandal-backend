@@ -2,17 +2,18 @@ package com.mahilamandal.servicesimplementation;
 
 import com.mahilamandal.entity.RoleEntity;
 import com.mahilamandal.entity.UserRegistrationEntity;
+import com.mahilamandal.repository.RoleRepository;
 import com.mahilamandal.repository.UserRegistrationRepository;
 import com.mahilamandal.request.UserLoginRequest;
 import com.mahilamandal.request.UserRegistrationRequest;
 import com.mahilamandal.response.Response;
-import com.mahilamandal.response.UserInfo;
-import com.mahilamandal.services.RoleService;
+import com.mahilamandal.response.info.RoleInfo;
+import com.mahilamandal.response.info.UserInfo;
 import com.mahilamandal.services.UserRegistrationService;
 import com.mahilamandal.response.BaseResponse;
+import com.mahilamandal.utils.Util;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
     @Autowired
     private UserRegistrationRepository userRegistrationRepository;
     @Autowired
-    private RoleService roleService;
+    private RoleRepository roleRepository;
 
     @Override
     public BaseResponse addUser(UserRegistrationRequest userRegistration) {
@@ -37,9 +38,10 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
         entity.setMobileNo(userRegistration.getMobileNo());
         entity.setAddress(userRegistration.getAddress());
 
-        RoleEntity roleEntity=roleService.getRoleById(userRegistration.getRoleId());
-        if (roleEntity!=null){
-            entity.setRole(roleEntity);
+        Optional<RoleEntity> roleEntity=roleRepository.findById(userRegistration.getRoleId());
+
+        if (roleEntity.isPresent()){
+            entity.setRole(roleEntity.get());
             userRegistrationRepository.save(entity);
             baseResponse.setMessage("Data Inserted Successfully");
             baseResponse.setStatusCode(StatusCode.Success.ordinal());
@@ -61,13 +63,20 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
         );
 
         if (entity!=null){
+
+            RoleInfo roleInfo=RoleInfo.builder()
+                    .id(entity.getRole().getId())
+                    .roleName(entity.getRole().getRoleName())
+                    .timestamp(Util.getTimeStamp(entity.getRole().getCreatedDateTime()))
+                    .build();
+
             response.setResponse(new UserInfo(
                     entity.getId(),
                     entity.getAddedBy(),
                     entity.getUserName(),
                     entity.getPassword(),
                     entity.getMobileNo(),
-                    entity.getRole(),
+                    roleInfo,
                     entity.getAddress()
             ));
             response.setMessage("Login Successfully");
@@ -87,19 +96,24 @@ public class UserRegistrationServiceImplementation implements UserRegistrationSe
 
         if (user.isPresent()){
             UserRegistrationEntity entity=user.get();
+            RoleInfo roleInfo=RoleInfo.builder()
+                    .id(entity.getRole().getId())
+                    .roleName(entity.getRole().getRoleName())
+                    .build();
+
             response.setResponse(new UserInfo(
                     entity.getId(),
                     entity.getAddedBy(),
                     entity.getUserName(),
                     entity.getPassword(),
                     entity.getMobileNo(),
-                    entity.getRole(),
+                    roleInfo,
                     entity.getAddress()
             ));
             response.setMessage("Fetched Successfully");
             response.setStatusCode(StatusCode.Success.ordinal());
         }else {
-            response.setMessage("Invalid User Id !");
+            response.setMessage("No record found !");
             response.setStatusCode(StatusCode.Failed.ordinal());
         }
         return response;

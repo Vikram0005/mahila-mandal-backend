@@ -8,11 +8,14 @@ import com.mahilamandal.request.GroupRequest;
 import com.mahilamandal.response.BaseResponse;
 import com.mahilamandal.response.GroupResponse;
 import com.mahilamandal.response.Response;
+import com.mahilamandal.response.info.GroupInfo;
 import com.mahilamandal.services.GroupService;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,7 +38,7 @@ public class GroupServiceImplementation implements GroupService {
                         .groupName(groupRequest.getGroupName())
                         .amount(groupRequest.getAmount())
                         .tenure(groupRequest.getTenure())
-                        .user(userRegistrationEntity.get())
+                        .addedBy(userRegistrationEntity.get())
                         .build();
                 groupRepository.save(entity);
                 return new BaseResponse("Group Added Successfully !!",StatusCode.Success.ordinal());
@@ -51,7 +54,22 @@ public class GroupServiceImplementation implements GroupService {
         Response<GroupResponse> response=new Response<>();
 
         GroupResponse groupResponse=new GroupResponse();
-        groupResponse.setGroups(groupRepository.findAll());
+        List<GroupEntity> groupEntityList=groupRepository.findAll();
+
+        List<GroupInfo> groupInfos=new ArrayList<>();
+
+        groupEntityList.forEach(group->{
+            GroupInfo groupInfo=GroupInfo.builder()
+                    .id(group.getId())
+                    .groupName(group.getGroupName())
+                    .tenure(group.getTenure())
+                    .amount(group.getAmount())
+                    .addedBy(group.getAddedBy().getId())
+                    .build();
+            groupInfos.add(groupInfo);
+        });
+
+        groupResponse.setGroups(groupInfos);
 
         response.setResponse(groupResponse);
         response.setMessage("Groups fetched Successfully");
@@ -60,12 +78,22 @@ public class GroupServiceImplementation implements GroupService {
     }
 
     @Override
-    public Response<GroupEntity> getGroupById(int groupId) {
-        Response<GroupEntity> response=new Response<>();
+    public Response<GroupInfo> getGroupById(int groupId) {
+        Response<GroupInfo> response=new Response<>();
 
         Optional<GroupEntity> groupEntity=groupRepository.findById(groupId);
         if (groupEntity.isPresent()){
-            response.setResponse(groupEntity.get());
+            GroupEntity entity=groupEntity.get();
+
+            GroupInfo groupInfo=GroupInfo.builder()
+                    .id(entity.getId())
+                    .groupName(entity.getGroupName())
+                    .tenure(entity.getTenure())
+                    .amount(entity.getAmount())
+                    .addedBy(entity.getAddedBy().getId())
+                    .build();
+
+            response.setResponse(groupInfo);
             response.setMessage("Fetched Successfully");
             response.setStatusCode(StatusCode.Success.ordinal());
         }

@@ -1,4 +1,4 @@
-package com.mahilamandal.response;
+package com.mahilamandal.response.info;
 
 import com.mahilamandal.entity.Address;
 import com.mahilamandal.entity.RoleEntity;
@@ -15,6 +15,6 @@ public class UserInfo {
     private String userName;
     private String password;
     private String mobileNo;
-    private RoleEntity role;
+    private RoleInfo role;
     private Address address;
 }

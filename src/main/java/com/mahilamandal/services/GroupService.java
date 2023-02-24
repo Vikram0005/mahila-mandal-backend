@@ -5,9 +5,10 @@ import com.mahilamandal.request.GroupRequest;
 import com.mahilamandal.response.BaseResponse;
 import com.mahilamandal.response.GroupResponse;
 import com.mahilamandal.response.Response;
+import com.mahilamandal.response.info.GroupInfo;
 
 public interface GroupService {
     BaseResponse addGroup(GroupRequest grouprequest);
     Response<GroupResponse> getAllGroup();
-    Response<GroupEntity> getGroupById(int groupId);
+    Response<GroupInfo> getGroupById(int groupId);
 }

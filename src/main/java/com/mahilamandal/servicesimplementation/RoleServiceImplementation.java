@@ -5,12 +5,15 @@ import com.mahilamandal.repository.RoleRepository;
 import com.mahilamandal.request.RoleRequest;
 import com.mahilamandal.response.Response;
 import com.mahilamandal.response.RoleResponse;
+import com.mahilamandal.response.info.RoleInfo;
 import com.mahilamandal.services.RoleService;
 import com.mahilamandal.response.BaseResponse;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,21 +35,49 @@ public class RoleServiceImplementation implements RoleService {
         Response<RoleResponse> response=new Response<>();
         RoleResponse roleResponse=new RoleResponse();
 
-        roleResponse.setRoles(roleRepository.findAll());
-        response.setResponse(roleResponse);
+        List<RoleEntity> roleEntities=roleRepository.findAll();
+        List<RoleInfo> roleInfos=new ArrayList<>();
 
+        roleEntities.forEach(role->{
+            RoleInfo roleInfo= RoleInfo.builder()
+                    .id(role.getId())
+                    .roleName(role.getRoleName())
+                    .build();
+            roleInfos.add(roleInfo);
+        });
+        roleResponse.setRoles(roleInfos);
+
+        response.setResponse(roleResponse);
         response.setMessage("Roles fetched Successfully");
         response.setStatusCode(StatusCode.Success.ordinal());
         return response;
     }
 
-
     @Override
-    public RoleEntity getRoleById(int roleId) {
+    public Response<RoleInfo> getRoleById(int roleId) {
+
+        Response<RoleInfo> response=new Response<>();
         Optional<RoleEntity> roleEntity= roleRepository.findById(roleId);
-        if (roleEntity.isPresent())
-            return roleEntity.get();
+
+        if (roleEntity.isPresent()){
+
+            RoleEntity entity=roleEntity.get();
+
+            RoleInfo roleInfo=RoleInfo.builder()
+                    .id(entity.getId())
+                    .roleName(entity.getRoleName())
+                    .build();
+
+            response.setResponse(roleInfo);
+            response.setMessage("Role Fetched Successfully !!");
+            response.setStatusCode(StatusCode.Success.ordinal());
+        }
         else
-            return null;
+        {
+            response.setResponse(null);
+            response.setMessage("No record found !!");
+            response.setStatusCode(StatusCode.Failed.ordinal());
+        }
+        return response;
     }
 }

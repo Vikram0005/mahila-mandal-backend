@@ -33,7 +33,7 @@ public class GroupEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "addedBy",referencedColumnName = "id")
-    private UserRegistrationEntity user;
+    private UserRegistrationEntity addedBy;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp

@@ -1,10 +1,11 @@
 package com.mahilamandal.response;
 
 import com.mahilamandal.entity.GroupEntity;
+import com.mahilamandal.response.info.GroupInfo;
 import lombok.Data;
 import java.util.List;
 
 @Data
 public class GroupResponse {
-    private List<GroupEntity> groups;
+    private List<GroupInfo> groups;
 }
