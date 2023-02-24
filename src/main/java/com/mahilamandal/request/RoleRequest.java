@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoleRequest extends BaseRequest{
+public class RoleRequest {
     private String roleName;
 }

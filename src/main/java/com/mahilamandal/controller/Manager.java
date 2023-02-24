@@ -13,7 +13,6 @@ import com.mahilamandal.utils.enums.RequestType;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.lang.reflect.Type;
 
 @Component

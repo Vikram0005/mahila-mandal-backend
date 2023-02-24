@@ -9,7 +9,7 @@ import javax.persistence.Column;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupRequest extends BaseRequest{
+public class GroupRequest{
     private int id;
     private String groupName;
     private float amount;

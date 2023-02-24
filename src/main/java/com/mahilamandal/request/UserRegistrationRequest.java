@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserRegistrationRequest extends BaseRequest {
+public class UserRegistrationRequest{
     private int id;
     private int addedBy;
     private String userName;
