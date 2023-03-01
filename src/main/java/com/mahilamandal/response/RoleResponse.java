@@ -1,6 +1,5 @@
 package com.mahilamandal.response;
 
-import com.mahilamandal.entity.RoleEntity;
 import com.mahilamandal.response.info.RoleInfo;
 import lombok.Data;
 

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -17,4 +19,6 @@ import java.io.Serializable;
 public class BaseRequest {
     protected int userId;
     protected int requestType=RequestType.None.ordinal();
+    protected  String version;
+    protected List<Attribute> attributes;
 }
