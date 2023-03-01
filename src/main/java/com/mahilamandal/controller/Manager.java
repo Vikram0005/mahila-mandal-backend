@@ -1,12 +1,10 @@
 package com.mahilamandal.controller;
 
-import com.mahilamandal.request.GroupRequest;
-import com.mahilamandal.request.RoleRequest;
-import com.mahilamandal.request.UserLoginRequest;
-import com.mahilamandal.request.UserRegistrationRequest;
+import com.mahilamandal.request.*;
 import com.mahilamandal.request.dataclasses.*;
 import com.mahilamandal.response.BaseResponse;
 import com.mahilamandal.services.GroupService;
+import com.mahilamandal.services.MemberService;
 import com.mahilamandal.services.RoleService;
 import com.mahilamandal.services.UserRegistrationService;
 import com.mahilamandal.utils.enums.RequestType;
@@ -23,6 +21,8 @@ public class Manager {
     private RoleService roleService;
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private MemberService memberService;
 
     public Object callServicesBasedOnRequestType(int requestType, String requestData){
         Object response=new BaseResponse();
@@ -59,6 +59,17 @@ public class Manager {
             case  GetGroupById:
                 Request request1=JsonToObject(requestData,Request.class);
                 response=groupService.getGroupById(request1.getUserId());
+                break;
+            case AddMember:
+                Request<MemberRequest> memberRequest=JsonToObject(requestData, MemberRequestData.class);
+                response=memberService.addMember(memberRequest.getRequest());
+                break;
+            case GetAllMember:
+                response=memberService.getAllMembers();
+                break;
+            case  GetMemberById:
+                Request request2=JsonToObject(requestData,Request.class);
+                response=memberService.getMemberById(request2.getUserId());
                 break;
         }
         return response;

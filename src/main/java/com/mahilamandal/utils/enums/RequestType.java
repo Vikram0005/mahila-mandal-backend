@@ -10,6 +10,9 @@ public enum RequestType {
     AddGroup,//7
     GetAllGroup,//8
     GetGroupById,//9
+    AddMember,//10
+    GetAllMember,//11
+    GetMemberById,//12
 }
 
 

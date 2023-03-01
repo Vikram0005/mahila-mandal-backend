@@ -20,5 +20,5 @@ public class BaseRequest {
     protected int userId;
     protected int requestType=RequestType.None.ordinal();
     protected  String version;
-    protected List<Attribute> attributes;
+    protected List<Attribute> attributes=null;
 }
