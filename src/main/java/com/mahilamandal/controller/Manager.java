@@ -26,6 +26,7 @@ public class Manager {
 
     public Object callServicesBasedOnRequestType(int requestType, String requestData){
         Object response=new BaseResponse();
+        Request request=null;
         switch(RequestType.values()[requestType]){
             case Test:
                 response=new BaseResponse("Test API is working ", StatusCode.Success.ordinal());
@@ -46,7 +47,7 @@ public class Manager {
                 response= userRegistrationService.addUser(userRegistrationRequest.getRequest());
                 break;
             case FindUserById:
-                Request request=JsonToObject(requestData,Request.class);
+                request=JsonToObject(requestData,Request.class);
                 response=userRegistrationService.findUserById(request.getUserId());
                 break;
             case AddGroup:
@@ -57,8 +58,8 @@ public class Manager {
                 response=groupService.getAllGroup();
                 break;
             case  GetGroupById:
-                Request request1=JsonToObject(requestData,Request.class);
-                response=groupService.getGroupById(request1.getUserId());
+                request=JsonToObject(requestData,Request.class);
+                response=groupService.getGroupById(request.getUserId());
                 break;
             case AddMember:
                 Request<MemberRequest> memberRequest=JsonToObject(requestData, MemberRequestData.class);
@@ -68,8 +69,8 @@ public class Manager {
                 response=memberService.getAllMembers();
                 break;
             case  GetMemberById:
-                Request request2=JsonToObject(requestData,Request.class);
-                response=memberService.getMemberById(request2.getUserId());
+                request=JsonToObject(requestData,Request.class);
+                response=memberService.getMemberById(request.getUserId());
                 break;
         }
         return response;
