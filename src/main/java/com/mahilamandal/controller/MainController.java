@@ -9,11 +9,13 @@ import com.mahilamandal.services.RoleService;
 import com.mahilamandal.services.UserRegistrationService;
 import com.mahilamandal.request.BaseRequest;
 import com.mahilamandal.response.BaseResponse;
+import com.mahilamandal.utils.AES;
 import com.mahilamandal.utils.Logger;
 import com.mahilamandal.utils.enums.PrintType;
 import com.mahilamandal.utils.enums.RequestType;
 import com.mahilamandal.utils.enums.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,10 @@ import java.lang.reflect.Type;
 @RestController
 public class MainController {
     private static Gson gson;
+
+    @Value("${application-version}")
+    String version;
+
     public MainController() {
 
         gson=new GsonBuilder()
@@ -37,15 +43,31 @@ public class MainController {
     }
 
     @PostMapping("/processRequest/")
-    private String PostData(@RequestBody String data){
+    private String PostData(@RequestBody String requestBody) {
+
+        String data = requestBody;
+
+//        String encryptedData=AES.encrypt(requestBody);
+//        System.out.println(encryptedData);
+//        //Decryption
+//        String data=AES.decrypt(encryptedData);
+//        System.out.println(data);
+
         BaseResponse response = new BaseResponse();
 
-        BaseRequest request=gson.fromJson(data,BaseRequest.class);
+        BaseRequest request = gson.fromJson(data, BaseRequest.class);
         if (request != null) {
-            Logger.printMessage(data,PrintType.Request,RequestType.values()[request.getRequestType()]);
+            Logger.printMessage(data, PrintType.Request, RequestType.values()[request.getRequestType()]);
 
             response.setUserId(request.getUserId());
             response.setRequestType(request.getRequestType());
+            response.setVersion(request.getVersion());
+
+            //Checking Version
+            if (!version.equalsIgnoreCase(request.getVersion())) {
+                response.setMessage("Invalid Version "+request.getVersion());
+                return ConvertObjectToJson((response));
+            }
 
             if (request.getRequestType() != RequestType.None.ordinal()) {
                 return callServices(request, data);
@@ -67,9 +89,12 @@ public class MainController {
         BaseResponse res=(BaseResponse)response;
         res.setUserId(baseRequest.getUserId());
         res.setRequestType(baseRequest.getRequestType());
+        res.setVersion(baseRequest.getVersion());
 
         String finalResponse= ConvertObjectToJson(response);
         Logger.printMessage(finalResponse,PrintType.Response,RequestType.values()[baseRequest.getRequestType()]);
+        //String encryptData=AES.encrypt(finalResponse);
+        //return encryptData;
         return finalResponse;
     }
 

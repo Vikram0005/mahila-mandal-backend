@@ -35,11 +35,9 @@ public class GroupEntity {
     @JoinColumn(name = "addedBy",referencedColumnName = "id")
     private UserRegistrationEntity addedBy;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     private LocalDateTime createdDateTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
 }

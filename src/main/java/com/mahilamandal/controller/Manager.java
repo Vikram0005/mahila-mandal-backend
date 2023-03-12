@@ -76,7 +76,7 @@ public class Manager {
         return response;
     }
 
-    private <R> Request JsonToObject(String data, Class<R> requestOfR) {
-        return MainController.getGson().fromJson(data,(Type)requestOfR);
+    private <R> Request JsonToObject(String data, Class<R> requestData) {
+        return MainController.getGson().fromJson(data,(Type)requestData);
     }
 }

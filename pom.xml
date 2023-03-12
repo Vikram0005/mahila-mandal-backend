@@ -12,7 +12,7 @@
 	<artifactId>mahilamandal</artifactId>
 	<version>1.0.1</version>
 	<name>mahilamandal</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Mahila Mandal Project</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
